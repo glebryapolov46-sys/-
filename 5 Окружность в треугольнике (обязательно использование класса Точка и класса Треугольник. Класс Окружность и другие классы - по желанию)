@@ -1,0 +1,59 @@
+data class Point(val x: Double, val y: Double)
+data class Triangle(val a: Point, val b: Point, val c: Point)
+
+fun main() {
+    println("Введите координаты вершин треугольника:")
+    val a = readPoint("A")
+    val b = readPoint("B")
+    val c = readPoint("C")
+    val triangle = Triangle(a, b, c)
+
+    val (center, radius) = inscribedCenter(triangle)
+
+    println("Центр вписанной окружности: ($center)")
+    println("Радиус: $radius")
+}
+
+fun readPoint(name: String): Point {
+    while (true) {
+        try {
+            print("Введите x для точки $name: ")
+            val x = readLine()!!.toDouble()
+            print("Введите y для точки $name: ")
+            val y = readLine()!!.toDouble()
+            return Point(x, y)
+        } catch (e: NumberFormatException) {
+            println("Ошибка: введите число.")
+        }
+    }
+}
+
+fun inscribedCenter(t: Triangle): Pair<Point, Double> {
+    val aLen = distance(t.b, t.c)  // длина стороны BC
+    val bLen = distance(t.a, t.c)  // длина стороны AC
+    val cLen = distance(t.a, t.b)  // длина стороны AB
+
+    val perimeter = aLen + bLen + cLen
+
+    if (perimeter == 0.0) {
+        throw ArithmeticException("Треугольник вырожден: точки совпадают.")
+    }
+
+    // Координаты центра вписанной окружности (барицентрические координаты)
+    val x = (aLen * t.a.x + bLen * t.b.x + cLen * t.c.x) / perimeter
+    val y = (aLen * t.a.y + bLen * t.b.y + cLen * t.c.y) / perimeter
+
+    val center = Point(x, y)
+
+    // Площадь треугольника по формуле шнула
+    val area = kotlin.math.abs((t.b.x - t.a.x) * (t.c.y - t.a.y) - (t.c.x - t.a.x) * (t.b.y - t.a.y)) / 2
+    val radius = 2 * area / perimeter
+
+    return Pair(center, radius)
+}
+
+fun distance(p1: Point, p2: Point): Double {
+    val dx = p2.x - p1.x
+    val dy = p2.y - p1.y
+    return kotlin.math.sqrt(dx * dx + dy * dy)
+}
