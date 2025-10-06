@@ -1,0 +1,55 @@
+data class Point(val x: Double, val y: Double)
+
+fun main() {
+    var n = 0
+    while (true) {
+        try {
+            print("Введите количество точек (больше 2): ")
+            n = readLine()!!.toInt()
+            if (n > 2) break
+            else println("Количество должно быть больше 2.")
+        } catch (e: NumberFormatException) {
+            println("Ошибка: введите целое число.")
+        }
+    }
+
+    val points = mutableListOf<Point>()
+    for (i in 1..n) {
+        println("Введите координаты точки $i:")
+        points.add(readPoint("$i"))
+    }
+
+    var minDist = Double.MAX_VALUE
+    var maxDist = 0.0
+
+    for (i in points.indices) {
+        for (j in i + 1 until points.size) {
+            val dist = distance(points[i], points[j])
+            if (dist < minDist) minDist = dist
+            if (dist > maxDist) maxDist = dist
+        }
+    }
+
+    println("Минимальное расстояние: $minDist")
+    println("Максимальное расстояние: $maxDist")
+}
+
+fun readPoint(name: String): Point {
+    while (true) {
+        try {
+            print("Введите x для точки $name: ")
+            val x = readLine()!!.toDouble()
+            print("Введите y для точки $name: ")
+            val y = readLine()!!.toDouble()
+            return Point(x, y)
+        } catch (e: NumberFormatException) {
+            println("Ошибка: введите число.")
+        }
+    }
+}
+
+fun distance(p1: Point, p2: Point): Double {
+    val dx = p2.x - p1.x
+    val dy = p2.y - p1.y
+    return kotlin.math.sqrt(dx * dx + dy * dy)
+}
