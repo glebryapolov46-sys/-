@@ -1,0 +1,48 @@
+ata class Point(val x: Double, val y: Double)
+data class Triangle(val a: Point, val b: Point, val c: Point)
+
+fun main() {
+    println("Введите координаты треугольника (3 точки):")
+    val a = readPoint("A")
+    val b = readPoint("B")
+    val c = readPoint("C")
+    val triangle = Triangle(a, b, c)
+
+    println("Введите координаты точки:")
+    val p = readPoint("P")
+
+    if (isInside(triangle, p)) {
+        println("Точка находится внутри треугольника.")
+    } else {
+        println("Точка находится вне треугольника.")
+    }
+}
+
+fun readPoint(name: String): Point {
+    while (true) {
+        try {
+            print("Введите x для точки $name: ")
+            val x = readLine()!!.toDouble()
+            print("Введите y для точки $name: ")
+            val y = readLine()!!.toDouble()
+            return Point(x, y)
+        } catch (e: NumberFormatException) {
+            println("Ошибка: введите число.")
+        }
+    }
+}
+
+fun sign(p1: Point, p2: Point, p3: Point): Double {
+    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y)
+}
+
+fun isInside(t: Triangle, p: Point): Boolean {
+    val d1 = sign(p, t.a, t.b)
+    val d2 = sign(p, t.b, t.c)
+    val d3 = sign(p, t.c, t.a)
+
+    val hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0)
+    val hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0)
+
+    return !(hasNeg && hasPos)
+}
