@@ -1,0 +1,33 @@
+data class Point(val x: Double, val y: Double)
+
+fun main() {
+    println("Введите координаты первой точки:")
+    val p1 = readPoint("1")
+
+    println("Введите координаты второй точки:")
+    val p2 = readPoint("2")
+
+    val dist = distance(p1, p2)
+
+    println("Расстояние между точками: $dist")
+}
+
+fun readPoint(name: String): Point {
+    while (true) {
+        try {
+            print("Введите x для точки $name: ")
+            val x = readLine()!!.toDouble()
+            print("Введите y для точки $name: ")
+            val y = readLine()!!.toDouble()
+            return Point(x, y)
+        } catch (e: NumberFormatException) {
+            println("Ошибка: введите число.")
+        }
+    }
+}
+
+fun distance(p1: Point, p2: Point): Double {
+    val dx = p2.x - p1.x
+    val dy = p2.y - p1.y
+    return kotlin.math.sqrt(dx * dx + dy * dy)
+}
